@@ -27,20 +27,22 @@ module.exports = (db) => {
             allowNull: false,
         },
         yearOfEnrollment: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         isInSuplementaryYear: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BOOLEAN,
             allowNull: false,
         },
         series: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         group: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false,
         },
+    },{
+        freezeTableName: true
     })
 }
