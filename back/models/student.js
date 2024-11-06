@@ -18,6 +18,10 @@ module.exports = (db) => {
             type: DataTypes.DATE,
             allowNull: false,
         },
+        phoneNumber: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         faculty: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -29,6 +33,9 @@ module.exports = (db) => {
         yearOfEnrollment: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        formOfEducation: {
+            type: DataTypes.ENUM(["IF","IFR", "ID"])
         },
         isInSuplementaryYear: {
             type: DataTypes.BOOLEAN,
