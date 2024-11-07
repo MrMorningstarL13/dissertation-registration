@@ -1,22 +1,22 @@
 const db = require('../config/db');
 
-const StudentModel = require('./student')(db);
-const RequestModel = require('./request')(db);
-const SessionModel = require('./session')(db);
-const ProfessorModel = require('./professor')(db);
+const Student = require('./student')(db);
+const Request = require('./request')(db);
+const Session = require('./session')(db);
+const Professor = require('./professor')(db);
 
-Student.hasMany(RequestModel, {foreignKey: 'studentId'})
-Request.belongsTo(StudentModel, {foreignKey: 'studentId'})
+Student.hasMany(Request, {foreignKey: 'studentId'})
+Request.belongsTo(Student, {foreignKey: 'studentId'})
 
-Professor.hasMany(SessionModel, {foreignKey: 'profId'})
-Session.belongsTo(ProfessorModel, {foreignKey: 'profId'})
+Professor.hasMany(Session, {foreignKey: 'profId'})
+Session.belongsTo(Professor, {foreignKey: 'profId'})
 
-Session.belongsToMany(RequestModel, {through: 'SessionRequestJunction'})
-Request.belongsToMany(SessionModel, {through: 'SessionRequestJunction'})
+Session.belongsToMany(Request, {through: 'SessionRequestJunction'})
+Request.belongsToMany(Session, {through: 'SessionRequestJunction'})
 
 module.exports = {
-    StudentModel,
-    RequestModel,
-    SessionModel,
-    ProfessorModel,
+    Student,
+    Request,
+    Session,
+    Professor,
 }
