@@ -14,6 +14,14 @@ module.exports = (db) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        faculty: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        department: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         freeSpots: {
             type: DataTypes.INTEGER,
             allowNull: false,

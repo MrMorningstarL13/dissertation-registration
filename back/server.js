@@ -1,4 +1,5 @@
-import express from 'express'
+const express = require('express')
+const db = require('./config/db');
 
 const app = express()
 const port = 8080
@@ -11,4 +12,13 @@ app.listen(port, () => {
 
 app.get("/salut", (req, res) => {
     res.status(200).send("Salut")
+})
+
+app.get("/reset-db", async (req, res) => {
+    try{
+        await db.sync({force: true})
+        res.status(200).send("Database reset succesfully")
+    } catch(err){
+        console.log(err)
+    }
 })
