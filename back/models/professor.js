@@ -4,7 +4,8 @@ module.exports = (db) => {
     const ProfessorModel = db.define("professor", {
         id: {
             type: DataTypes.INTEGER,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true,
         },
         firstName: {
             type: DataTypes.STRING,

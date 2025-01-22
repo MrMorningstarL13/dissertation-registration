@@ -26,6 +26,12 @@ module.exports = (db) => {
         requestDate: {
             type: DataTypes.DATE,
             allowNull: false
+        },
+        hasUploaded: {
+            type: DataTypes.BOOLEAN
+        },
+        isApprovedUpload: {
+            type: DataTypes.BOOLEAN
         }
     },{
         freezeTableName: true

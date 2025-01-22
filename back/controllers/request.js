@@ -6,12 +6,16 @@ const controller = {
             let data = {
                 appTitle: req.body.appTitle,
                 appDescription: req.body.appDescription,
+                studentId: req.params.studId,
+                sessionId: req.params.sessionId
             }
     
             let createdRequest = await RequestModel.create({
                 appTitle:data.appTitle,
                 appDescription: data.appDescription,
-                requestDate: new Date()
+                requestDate: new Date(),
+                studentId: data.studentId,
+                sessionId: data.sessionId,
             })
             res.status(200).json(createdRequest)
         } catch (error) {
@@ -20,6 +24,21 @@ const controller = {
         }
         
     },
+
+    upload: async(req, res) => {
+        try {
+            let updatedRequest = await RequestModel.update({
+                hasUploaded: true
+            }, {where: {
+                studentId:req.params.id
+            }})
+            res.status(200).json("upload good")
+        } catch (error) {
+            console.warn(err)
+            res.status(500).json("Server error!")
+        }
+    },
+
     acceptRequest: async(req, res) => {
         try {
             let evaluatedRequest = await RequestModel.findByPk(req.params.id)

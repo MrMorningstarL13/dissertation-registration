@@ -5,7 +5,7 @@ const controller = {
         try {
             let professorData = {
                 firstName: req.body.firstName,
-                lastname: req.body.lastname,
+                lastName: req.body.lastName,
                 faculty: req.body.faculty,
                 phoneNumber: req.body.phoneNumber,
                 email: req.body.email,
@@ -16,7 +16,7 @@ const controller = {
             res.status(200).json(professorCreat)
 
         } catch (error) {
-            res.status(500).json("error in creating professor")
+            res.status(500).json(error.message)
         }
     },
 
@@ -55,7 +55,7 @@ const controller = {
         try {
             let professor = await ProfessorModel.update({
                 firstName: req.body.firstName,
-                lastname: req.body.lastname,
+                lastName: req.body.lastName,
                 faculty: req.body.faculty,
                 phoneNumber: req.body.phoneNumber,
                 email: req.body.email,

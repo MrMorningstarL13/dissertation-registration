@@ -5,6 +5,7 @@ module.exports = (db) => {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
         startDate: {
             type: DataTypes.DATE,
