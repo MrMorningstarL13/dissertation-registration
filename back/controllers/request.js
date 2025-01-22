@@ -26,14 +26,22 @@ const controller = {
             if(evaluatedRequest){
                 let updatedRequest = await RequestModel.update({
                     wasApproved: true,
-                    appTitle: appTitle,
-                    appDescription: appDescription,
-                    denialJustification: null
                 }, {where: {id:req.params.id}})
             
             let sessionUpdated = await SessionModel.update({
                 availableSlots: availableSlots -= 1
             }, {where: {id: updatedRequest.sessionId}})
+
+            let requests = await RequestModel.update({
+                wasApproved: false,
+            },  
+            {
+                where: {studentId: evaluatedRequest.studentId}
+            })
+
+            for(let request of requests){
+
+            }
             
             res.status(200).json("Request accepted!")
             } else {

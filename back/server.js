@@ -19,7 +19,7 @@ app.get("/salut", (req, res) => {
 
 app.get("/reset-db", async (req, res) => {
     try{
-        await db.sync({force: true})
+        await db.sync({alter: true})
         res.status(200).send("db reset good")
     } catch(err){
         console.log(err)

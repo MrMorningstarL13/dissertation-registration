@@ -11,8 +11,8 @@ RequestModel.belongsTo(StudentModel)
 ProfessorModel.hasMany(SessionModel)
 SessionModel.belongsTo(ProfessorModel)
 
-SessionModel.hasMany(RequestModel)
-RequestModel.belongsTo(SessionModel)
+SessionModel.belongsToMany(RequestModel, {through: 'request_session_junc'})
+RequestModel.belongsToMany(SessionModel, {through: 'request_session_junc'})
 
 
 module.exports = {
