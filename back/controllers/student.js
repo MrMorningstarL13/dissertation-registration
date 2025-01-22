@@ -1,7 +1,7 @@
-const {StudentModel} = require("../models")
+const {UserModel} = require("../models")
 
 const controller = {
-    registerUser: async (req, res) => {
+    registerStudent: async (req, res) => {
         let userData = {
             firstName: req.body.firstName,
             lastname: req.body.lastname,
@@ -18,5 +18,18 @@ const controller = {
 
         
         
+    },
+
+    getUserById: async (req, res) => {
+        try{
+            let searchedStudent = await UserModel.findByPk(req.params.id)
+            if(searchedStudent != null) {
+                res.status(200).json(searchedStudent)
+            } else res.status(404).json("Student with specified ID not found!")
+        } catch(err){
+            console.warn(err)
+            res.status(500).json("Server error!")
+        }
+
     }
 }

@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize')
 
 module.exports = (db) => {
-    const Student = db.define("student", {
+    const User = db.define("user", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true
@@ -28,26 +28,26 @@ module.exports = (db) => {
         },
         specialization: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         yearOfEnrollment: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         formOfEducation: {
             type: DataTypes.ENUM(["IF","IFR", "ID"])
         },
         isInSuplementaryYear: {
             type: DataTypes.BOOLEAN,
-            allowNull: false,
+            allowNull: true,
         },
         series: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         group: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
     },{
         freezeTableName: true
