@@ -18,6 +18,8 @@ const controller = {
             }
 
             let studentCreat = await StudentModel.create(studentData)
+            req.session.id = studentCreat.id;
+            req.session.email = studentCreat.email;
             res.status(200).json(studentCreat)
 
         } catch (error) {
@@ -42,6 +44,8 @@ const controller = {
                     res.status(404).json('no account was found')
                 } else {
                     if(professorCautat.password ===password){
+                        req.session.id = studentCautat.id;
+                        req.session.email = studentCautat.email;
                         res.status(200).json("log in successful")
                     }
                 }
@@ -56,6 +60,19 @@ const controller = {
             res.status(500).json("error logging in")
         }
 
+    },
+
+    logOut: async(req, res) => {
+        if (req.session.id) {
+            req.session.destroy((error) => {
+              if (error) {
+                res.status(500).json("Error logging out");
+              } else 
+              res.status(200).json("Logged out");
+            });
+          } else {
+            res.status(404).json("No active session");
+          }
     },
 
     getStudentById: async (req, res) => {
@@ -98,7 +115,20 @@ const controller = {
             console.warn("error in update")
             res.status(500).json("error in update")
         }
-    }
+    },
+
+    // verifyLogIn = async (req, res, next) => {
+    //     const { id } = req.session;  // Only check the user ID in the session
+    //     if (!id) {
+    //       return res.status(403).send({ message: "User not logged in." });
+    //     }
+      
+    //     const user = await User.findByPk(id); // You can use this if you're verifying user existence
+    //     if (!user) {
+    //       return res.status(403).send({ message: "User not found in the session." });
+    //     }
+    //     next();
+    //   },
 }
 
 module.exports = controller

@@ -25,3 +25,15 @@ app.get("/reset-db", async (req, res) => {
         console.log(err)
     }
 })
+
+app.use(
+    session({
+      cookieName: "session",
+      secret:
+        "eg[isfd-8yF9-7w2315dfergergpok123+Ijsli;;termgerdfkhmdkrherhhehwemgro8",
+      duration: 7200000,
+      activeDuration: 300000,
+      httpOnly: true,
+      ephemeral: true,
+    })
+  );
