@@ -5,11 +5,12 @@ const controller = {
         try {
             let studentData = {
                 firstName: req.body.firstName,
-                lastname: req.body.lastname,
+                lastName: req.body.lastName,
                 faculty: req.body.faculty,
                 specialization: req.body.specialization,
                 yearOfEnrollment: req.body.yearOfEnrollment,
-                isInSuplementaryYear: req.body.isInSuplementaryYear,
+                phoneNumber: req.body.phoneNumber,
+                formOfEducation: req.body.formOfEducation,
                 series: req.body.series,
                 group: req.body.group,
                 email: req.body.email,
@@ -20,7 +21,7 @@ const controller = {
             res.status(200).json(studentCreat)
 
         } catch (error) {
-            res.status(500).json("error in creating student")
+            res.status(500).json(error.message)
         }
     },
 
@@ -73,7 +74,7 @@ const controller = {
         try {
             let student = await StudentModel.update({
                 firstName: req.body.firstName,
-                lastname: req.body.lastname,
+                lastName: req.body.lastName,
                 phoneNumber: req.body.phoneNumber,
                 faculty: req.body.faculty,
                 specialization: req.body.specialization,

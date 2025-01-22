@@ -35,6 +35,7 @@ const controller = {
                 availableSlots: availableSlots -= 1
             }, {where: {id: updatedRequest.sessionId}})
             
+            res.status(200).json("Request accepted!")
             } else {
                 res.status(404).json("No request found")
             }
@@ -54,7 +55,7 @@ const controller = {
                     appDescription: appDescription,
                     denialJustification: req.body.denialJustification
                 }, {where: {id:req.params.id}})
-                res.status(200).json("Request denied successfully")
+                res.status(200).json("Request denied!")
             } else {
                 res.status(404).json("No request found")
             }
