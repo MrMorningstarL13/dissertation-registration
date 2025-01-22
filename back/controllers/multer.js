@@ -1,16 +1,16 @@
 const multer = require('multer')
-const {UserModel} = require('../models')
+const {StudentModel} = require('../models')
 
 const storage = multer.diskStorage({
 
     destination: (req, res, cb) => {
-        cb(null, '../uploads/students')
+        cb(null, '../uploads')
     },
     filename: async (req, file, cb) => {
         try {
-        let student = await UserModel.findByPk(req.params.userId)
+        let student = await StudentModel.findByPk(req.params.userId)
         const extension = path.extname(file.originalname)
-        const uniqueName = student.studentId+ '-' + student.firstName + student.lastName + Date.now() + extension
+        const uniqueName = student.studentId + '-' + student.role + student.firstName + student.lastName + Date.now() + extension
         cb(null, uniqueName)
         } catch (error) {
             console.warn("Error in upload")
@@ -20,3 +20,5 @@ const storage = multer.diskStorage({
 })
 
 const upload = multer({storage: storage})
+
+module.exports = {upload}

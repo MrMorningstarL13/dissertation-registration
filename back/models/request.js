@@ -1,14 +1,10 @@
 const {DataTypes} = require('sequelize')
 
 module.exports = (db) => {
-    const Request = db.define("request", {
+    const RequestModel = db.define("request", {
         id:{
             type: DataTypes.INTEGER,
             primaryKey: true,
-        },
-        studentId:{
-            type: DataTypes.INTEGER,
-            allowNull: false,
         },
         wasApproved:{
             type: DataTypes.BOOLEAN,
@@ -22,7 +18,13 @@ module.exports = (db) => {
             type: DataTypes.TEXT,
             allowNull: false,
         },
+        requstDate: {
+            type: DataTypes.DATE,
+            allowNull: false
+        }
     },{
         freezeTableName: true
     })
+
+    return RequestModel
 }

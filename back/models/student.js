@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize')
 
 module.exports = (db) => {
-    const User = db.define("user", {
+    const StudentModel = db.define("user", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true
@@ -12,10 +12,6 @@ module.exports = (db) => {
         },
         lastName: {
             type: DataTypes.STRING,
-            allowNull: false,
-        },
-        dateOfBirth: {
-            type: DataTypes.DATE,
             allowNull: false,
         },
         phoneNumber: {
@@ -52,4 +48,5 @@ module.exports = (db) => {
     },{
         freezeTableName: true
     })
+    return StudentModel
 }
