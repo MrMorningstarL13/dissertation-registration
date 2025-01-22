@@ -1,1 +1,1 @@
-const multerRouter = require("./multer")
+const multerRouter = require("./student")

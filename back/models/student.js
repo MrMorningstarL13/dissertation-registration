@@ -18,6 +18,14 @@ module.exports = (db) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         faculty: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -32,10 +40,6 @@ module.exports = (db) => {
         },
         formOfEducation: {
             type: DataTypes.ENUM(["IF","IFR", "ID"])
-        },
-        isInSuplementaryYear: {
-            type: DataTypes.BOOLEAN,
-            allowNull: true,
         },
         series: {
             type: DataTypes.STRING,

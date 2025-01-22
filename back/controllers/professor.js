@@ -1,0 +1,1 @@
+const {ProfessorModel} = require("../models")
