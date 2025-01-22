@@ -5,20 +5,25 @@ module.exports = (db) => {
         id:{
             type: DataTypes.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
         wasApproved:{
             type: DataTypes.BOOLEAN,
-            allowNull: false,
+            allowNull: true,
         },
         appTitle: {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        appDescription: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
         denialJustification: {
             type: DataTypes.TEXT,
-            allowNull: false,
+            allowNull: true,
         },
-        requstDate: {
+        requestDate: {
             type: DataTypes.DATE,
             allowNull: false
         }

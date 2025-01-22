@@ -1,4 +1,4 @@
-const { StudentModel } = require("../models")
+const { StudentModel, ProfessorModel } = require("../models")
 
 const controller = {
     createStudent: async (req, res) => {
@@ -26,16 +26,26 @@ const controller = {
 
     logIn: async (req, res) => {
         try {
-            let studentData = { email: req.body.email, password: req.body.password }
+            let data = { email: req.body.email, password: req.body.password }
 
             let studentCautat = await StudentModel.findOne({
-                where: { email: studentData.email }
+                where: { email: data.email }
             })
 
             if (!studentCautat) {
-                res.status(404).json("account not found")
+                let professorCautat = await ProfessorModel.findOne({
+                    where: { email: data.email }
+                })
+
+                if(!professorCautat){
+                    res.status(404).json('no account was found')
+                } else {
+                    if(professorCautat.password ===password){
+                        res.status(200).json("log in successful")
+                    }
+                }
             } else {
-                if (studentCautat.password === studentData.password) {
+                if (studentCautat.password === data.password) {
                     res.status(200).json("log in successful")
                 } else {
                     res.status(403).json("incorrect password")
@@ -64,6 +74,7 @@ const controller = {
             let student = await StudentModel.update({
                 firstName: req.body.firstName,
                 lastname: req.body.lastname,
+                phoneNumber: req.body.phoneNumber,
                 faculty: req.body.faculty,
                 specialization: req.body.specialization,
                 yearOfEnrollment: req.body.yearOfEnrollment,
@@ -78,6 +89,9 @@ const controller = {
                 }
             })
 
+            if(student){
+                res.status(200).json("update successful")
+            }
 
         } catch (error) {
             console.warn("error in update")
@@ -85,3 +99,5 @@ const controller = {
         }
     }
 }
+
+module.exports = controller

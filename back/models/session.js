@@ -18,6 +18,10 @@ module.exports = (db) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        maximumSlots: {
+            type: DataTypes.INTEGER,
+            defaultValue: 20,
+        }
     },{
         freezeTableName: true,
     })
