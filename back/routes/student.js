@@ -40,5 +40,6 @@ router.post("/logIn", studentController.logIn);
 router.get("/logOut", studentController.logOut);
 router.get("/get/:id", studentController.getStudentById);
 router.put("/update/:id", studentController.updateStudent);
+router.get("/getApprovedRequest/:profId/:sessionId", studentController.getRequestFile);
 
 module.exports = router;

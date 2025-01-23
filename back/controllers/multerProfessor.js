@@ -4,10 +4,11 @@ const { ProfessorModel } = require("../models");
 
 const storage = multer.diskStorage({
   destination: (req, res, cb) => {
-    cb(null, "../uploads/professors");
+    cb(null, "./uploads/professors");
   },
   filename: async (req, file, cb) => {
     try {
+        console.log(req.params)
       let professor = await ProfessorModel.findByPk(req.params.professorId);
 
       const extension = path.extname(file.originalname);
@@ -15,10 +16,11 @@ const storage = multer.diskStorage({
       const uniqueName =
         "professor-" +
         professor.id +
+        "." +
+        req.params.sessionId +
         "-" +
         professor.firstName +
         professor.lastName +
-        Date.now() +
         extension;
 
       cb(null, uniqueName);

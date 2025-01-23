@@ -85,9 +85,13 @@ const controller = {
 
   getRequests: async (req, res) => {
     try {
-      console.log("ceva");
       let requests = await RequestModel.findAll({
         where: { studentId: req.params.id },
+        include: [{
+          model: SessionModel,
+          as: 'session',
+          include: 'professor',
+        }],
       });
       res.status(200).json(requests);
     } catch (error) {

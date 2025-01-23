@@ -1,4 +1,6 @@
 const { StudentModel, ProfessorModel } = require("../models");
+const path = require("path");
+const fs = require("fs");
 
 const controller = {
   createStudent: async (req, res) => {
@@ -115,6 +117,36 @@ const controller = {
       res.status(500).json("error in update");
     }
   },
+
+  getRequestFile: async(req, res) =>{
+      try{
+        let profId = req.params.profId;
+        let sessionId = req.params.sessionId;
+        let prof = await ProfessorModel.findByPk(profId);
+        // let request = await RequestModel.findByPk(requestId, {include: 'student'});
+        // console.log(request);
+        // if(!request)
+        //   res.status(404).send('Request not found!')
+       
+        const filePath = path.join(__dirname, `../uploads/professors/professor-${profId}.${sessionId}-${prof.firstName}${prof.lastName}.pdf`);
+        console.log(filePath);
+        if (!filePath)
+          return res.status(500).send('Server error!');  
+        await fs.readFile(filePath, (err, file) => {
+          if (err) 
+            console.log(err); 
+          else {
+            console.log(filePath);
+            res.download(filePath, `${prof.firstName}_${prof.lastName}.pdf`);
+          } 
+        }) 
+      }catch(err)
+      {
+        console.log(err)
+        res.status(404).send('File not found!')
+  
+      }
+    },
 
   // verifyLogIn = async (req, res, next) => {
   //     const { id } = req.session;  // Only check the user ID in the session
