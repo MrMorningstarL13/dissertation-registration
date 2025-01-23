@@ -1,28 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { message, Button, Typography } from 'antd';
+import useApplicationStore from '../../../stores/applicationStore';
+
 import axios from 'axios';
 
 export default function Finished({ approvedRequest }) {
-    const handleDownload = async () => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/request/download/${approvedRequest.id}`, {
-                responseType: 'blob'
-            });
-
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `${approvedRequest.appTitle}.pdf`);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-
-            message.success('Downloaded successfully');
-        } catch (error) {
-            message.error('Download failed');
-            console.error(error);
-        }
-    };
+    // const [profId, setProfId] = useState();
+    // const [sessionID, setSessionId] = useState();
+    
+    console.log(approvedRequest.session.professorId)
+    //const profId = approvedRequest.session.professorId;
+    //const sessionID = approvedRequest.sessionId
+    
 
     return (
         <div>
@@ -34,7 +23,12 @@ export default function Finished({ approvedRequest }) {
 
             <Typography.Title level={2}>Description</Typography.Title>
             <Typography.Title level={5}>{approvedRequest.appDescription}</Typography.Title>
-            <Button type="primary" onClick={handleDownload}>Download</Button>
+            <a
+                href={`http://localhost:8080/api/student/getApprovedRequest/${approvedRequest.session.professorId}/${approvedRequest.sessionId}`}
+                download
+            >
+                <Button type="primary">Download</Button>
+            </a>
         </div>
     )
 }

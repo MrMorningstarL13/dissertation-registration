@@ -46,13 +46,14 @@ export default function StudApplicationsManagement() {
                 {
                     data?.map((item, index) => {
                         return (
+                            !(item.wasApproved == false) ? 
                             <Card
                                 title={item.appTitle}
                                 extra={<a onClick={() => showModal(item)}>More</a>}
                                 className={s.card}
                             >
                                 <p>{item.appDescription}</p>
-                            </Card>
+                            </Card> : null
                         )
                     }
                     )

@@ -21,7 +21,7 @@ export default function UploadRequestFinal({ approvedRequest }) {
         }
 
         const formData = new FormData();
-        formData.append('',fileList[0]);
+        formData.append('', fileList[0]);
         formData.append('studentId', userId);
 
         axios.post(`http://localhost:8080/api/student/uploadRequest/${userId}/${sessionId}`, formData, {
@@ -37,6 +37,8 @@ export default function UploadRequestFinal({ approvedRequest }) {
                 message.error('File upload failed');
                 console.error(error);
             });
+        axios.patch(`http://localhost:8080/api/request/upload/${approvedRequest.id}`, {hasUploaded: true})
+
     };
 
     const props = {

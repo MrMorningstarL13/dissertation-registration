@@ -32,30 +32,33 @@ const controller = {
   upload: async (req, res) => {
     try {
       const { requestId } = req.params; // Use requestId for precise targeting
+      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",requestId ,"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",);
       const updateData = {
-        ...req.body,  // Spread the values from req.body to update in the database
-        // Ensure `hasUploaded` is always set to true
+        ...req.body, 
       };
-  
+
+      console.log(updateData);
       const [updatedRows] = await RequestModel.update(updateData, {
         where: {
           id: requestId,
         },
       });
-  
+
       if (updatedRows === 0) {
-        return res.status(404).json("No matching request found or no updates made.");
+        return res
+          .status(404)
+          .json("No matching request found or no updates made.");
       }
-  
+
       res.status(200).json("Request updated successfully!");
     } catch (error) {
       console.warn(error);
       res.status(500).json("Server error!");
     }
   },
-  
-  getRequestFile: async(req, res) =>{
-    try{
+
+  getRequestFile: async (req, res) => {
+    try {
       let studentId = req.params.studentId;
       let sessionId = req.params.sessionId;
       let student = await StudentModel.findByPk(studentId);
@@ -63,35 +66,38 @@ const controller = {
       // console.log(request);
       // if(!request)
       //   res.status(404).send('Request not found!')
-     
-      const filePath = path.join(__dirname, `../uploads/students/student-${studentId}.${sessionId}-${student.firstName}${student.lastName}.pdf`);
-      if (!filePath)
-        return res.status(500).send('Server error!');  
+
+      const filePath = path.join(
+        __dirname,
+        `../uploads/students/student-${studentId}.${sessionId}-${student.firstName}${student.lastName}.pdf`
+      );
+      if (!filePath) return res.status(500).send("Server error!");
       await fs.readFile(filePath, (err, file) => {
-        if (err) 
-          console.log(err); 
+        if (err) console.log(err);
         else {
           console.log(filePath);
-          res.download(filePath, `${studentId}_${student.firstName}_${student.lastName}.pdf`);
-        } 
-      }) 
-    }catch(err)
-    {
-      res.status(404).send('File not found!')
-
+          res.download(
+            filePath,
+            `${studentId}_${student.firstName}_${student.lastName}.pdf`
+          );
+        }
+      });
+    } catch (err) {
+      res.status(404).send("File not found!");
     }
   },
-  
 
   getRequests: async (req, res) => {
     try {
       let requests = await RequestModel.findAll({
         where: { studentId: req.params.id },
-        include: [{
-          model: SessionModel,
-          as: 'session',
-          include: 'professor',
-        }],
+        include: [
+          {
+            model: SessionModel,
+            as: "session",
+            include: "professor",
+          },
+        ],
       });
       res.status(200).json(requests);
     } catch (error) {
