@@ -44,9 +44,9 @@ const controller = {
         if (!professorCautat) {
           res.status(404).json("no account was found");
         } else {
-          if (professorCautat.password === password) {
-            req.session.id = studentCautat.id;
-            req.session.email = studentCautat.email;
+          if (professorCautat.password === data.password) {
+            // req.session.id = studentCautat.id;
+            // req.session.email = studentCautat.email;
             res.status(200).json("log in successful");
           }
         }
@@ -58,7 +58,7 @@ const controller = {
         }
       }
     } catch (error) {
-      res.status(500).json("error logging in");
+      res.status(500).json(error.message);
     }
   },
 

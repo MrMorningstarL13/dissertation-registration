@@ -30,10 +30,8 @@ export default function Applications() {
     const [selectedItem, setSelectedItem] = useState(null);
     const [feedback, setFeedback] = useState(null);
     const profId = useUserStore((state) => state.id);
-    console.log(profId)
     useEffect(() => {
         const fetchData = async () => {
-            console.log(profId)
             const res = await axios.get(`http://localhost:8080/api/session/${profId}`)
             let requests = []
             console.log(res.data)
