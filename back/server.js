@@ -8,7 +8,8 @@ const cors = require("cors");
 const port = 8080
 app.use(
     cors({
-        origin: ["http://localhost:5173"],
+        origin: ["http://localhost:5173", "http://127.0.0.1:5173"
+        ],
       credentials: true,
       allowedHeaders: ["Content-Type", "Authorization", "Access-Control-Allow-Methods", "Access-Control-Request-Headers", "Access-Control-Allow-Origin"],
     })

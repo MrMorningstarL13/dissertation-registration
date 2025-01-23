@@ -12,10 +12,31 @@ const controller = {
   },
   getSessionsByProf: async (req, res) => {
     try {
-        console.log(req.params.id)
+      console.log(req.params.id);
       let allSessions = await SessionModel.findAll({
         where: { professorId: req.params.profId },
-        include: [{model: RequestModel, include: [StudentModel]} ],
+        include: [{ model: RequestModel, include: [StudentModel] }],
+      });
+      res.status(200).json(allSessions);
+    } catch (error) {
+      console.warn(error);
+      res.status(500).json(error.message);
+    }
+  },
+
+  getAcceptedSessionsByProf: async (req, res) => {
+    try {
+      console.log(req.params.id);
+      let allSessions = await SessionModel.findAll({
+        where: { professorId: req.params.profId },
+        include: [
+          {
+            model: RequestModel,
+            include: [StudentModel],
+            where: { wasApproved: true },
+            required: true,
+          },
+        ],
       });
       res.status(200).json(allSessions);
     } catch (error) {

@@ -32,13 +32,10 @@ export const EmailSignIn = ({ setFormStep, setIsProfessor }) => {
       setFormStep(2);
     } else {
       setIsProfessor(1);
-      setProfessor({
-        email: "prof@ase.ro",
-        firstName: "Prof",
-        lastName: "Prof",
-        phone: "123456789",
-        specialization: "ASE",
-      });
+      const res = await axios.post("http://localhost:8080/api/professor/logIn", values)
+      setProfessor(
+        res.data
+      );
       setFormStep(2);
     }
   };

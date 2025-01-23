@@ -10,20 +10,24 @@ import axios from 'axios';
 
 export default function StudApplicationsManagement() {
     const inscreaseStep = useApplicationStore((state) => state.increaseStep);
+    const step = useApplicationStore((state) => state.applicationStep);
+
     const [data, setData] = useState();
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-
+    const refreshToken = useApplicationStore((state) => state.refreshToken)
     const userId = useUserStore((state) => state.id);
 
+    console.log(refreshToken)
+    const fetchData = async () => {
+        const res = await axios.get(`http://localhost:8080/api/request/get/${userId}`)
+        console.log(res.data)
+        setData(res.data)
+    }
     useEffect(() => {
-        const fetchData = async () => {
-            const res = await axios.get(`http://localhost:8080/api/request/get/${userId}`)
-            console.log(res.data)
-            setData(res.data)
-        }
+       console.log('fetching data')
         fetchData()
-    }, []);
+    }, [refreshToken]);
 
     const showModal = (item) => {
         setOpen(true);

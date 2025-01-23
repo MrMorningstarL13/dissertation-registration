@@ -5,6 +5,7 @@ import useUserStore from '../../../stores/userStore';
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload, Button, Form, Input, Typography } from 'antd';
 import axios from 'axios';
+import { use } from 'react';
 const { TextArea } = Input;
 
 export default function UploadRequest() {
@@ -12,7 +13,7 @@ export default function UploadRequest() {
     const setStep = useApplicationStore((state) => state.setStep);
     const userId = useUserStore((state) => state.id);
     const sessionId = useApplicationStore((state) => state.sessionId);
-
+    const refreshApp =useApplicationStore((state) => state.refreshApp);
     const { Dragger } = Upload;
     const props = {
         name: 'file',
@@ -57,10 +58,16 @@ export default function UploadRequest() {
 
             <Form
                 onFinish={(values) => {
-                    console.log('Form values:', values);
                     axios.post(`http://localhost:8080/api/request/create/${userId}/${sessionId}`, values)
-                    message.success('Form submitted successfully!');
-                    setStep(1)
+                    .then(() => {
+                        message.success('Form submitted successfully!');
+                        refreshApp();
+                        setStep(1);
+                    })
+                    .catch((error) => {
+                        message.error('Form submission failed');
+                        console.error(error);
+                    });
                 }}
             >
                 <div>
@@ -91,7 +98,7 @@ export default function UploadRequest() {
                     <TextArea rows={4} />
                 </Form.Item>
 
-                <Form.Item>
+                {/* <Form.Item>
                     <Form.Item
                         name="dragger"
                         valuePropName="fileList"
@@ -104,7 +111,7 @@ export default function UploadRequest() {
                             <p className="ant-upload-text">Click or drag file to this area to upload</p>
                         </Dragger>
                     </Form.Item>
-                </Form.Item>
+                </Form.Item> */}
 
                
                 <Button  htmlType="submit" onClick={() => setStep(1)}>

@@ -1,4 +1,6 @@
-const { RequestModel, SessionModel } = require("../models");
+const { RequestModel, SessionModel, StudentModel } = require("../models");
+const path = require("path");
+const fs = require("fs");
 
 const controller = {
   createRequest: async (req, res) => {
@@ -32,7 +34,7 @@ const controller = {
       const { requestId } = req.params; // Use requestId for precise targeting
       const updateData = {
         ...req.body,  // Spread the values from req.body to update in the database
-        hasUploaded: true, // Ensure `hasUploaded` is always set to true
+        // Ensure `hasUploaded` is always set to true
       };
   
       const [updatedRows] = await RequestModel.update(updateData, {
@@ -52,6 +54,33 @@ const controller = {
     }
   },
   
+  getRequestFile: async(req, res) =>{
+    try{
+      let studentId = req.params.studentId;
+      let sessionId = req.params.sessionId;
+      let student = await StudentModel.findByPk(studentId);
+      // let request = await RequestModel.findByPk(requestId, {include: 'student'});
+      // console.log(request);
+      // if(!request)
+      //   res.status(404).send('Request not found!')
+     
+      const filePath = path.join(__dirname, `../uploads/students/student-${studentId}.${sessionId}-${student.firstName}${student.lastName}.pdf`);
+      if (!filePath)
+        return res.status(500).send('Server error!');  
+      await fs.readFile(filePath, (err, file) => {
+        if (err) 
+          console.log(err); 
+        else {
+          console.log(filePath);
+          res.download(filePath, `${studentId}_${student.firstName}_${student.lastName}.pdf`);
+        } 
+      }) 
+    }catch(err)
+    {
+      res.status(404).send('File not found!')
+
+    }
+  },
   
 
   getRequests: async (req, res) => {

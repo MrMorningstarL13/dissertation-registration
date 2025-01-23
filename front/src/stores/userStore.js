@@ -44,6 +44,7 @@ const useUserStore = create((set) => ({
       firstName: stud.firstName,
       lastName: stud.lastName,
       phone: stud.phone,
+      id: stud.id,
       specialization: stud.specialization,
       isProfessor: 1,
     }),

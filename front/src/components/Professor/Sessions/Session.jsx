@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import useUserStore from "../../../stores/userStore"
+import axios from "axios";
+
 import {
     Card, Typography, ConfigProvider, Collapse, Modal,
-    Button, Upload
+    Button, Upload, message
 } from "antd";
 import s from "./Session.module.css";
 
@@ -77,11 +80,45 @@ export default function Session() {
                 "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab deleniti assumenda praesentium natus cum reiciendis eligendi aspernatur, est quod dolorem quam iusto aut omnis animi temporibus! Dolore asperiores debitis optio!",
         },
     ];
-    const [data, setData] = useState(dataFromApi);
+
+    const [data, setData] = useState();
+    const [fileToUpload, setFileToUpload] = useState(null);
+    const [sessionID, setSessionID] = useState(null);
+    const profId = useUserStore((state) => state.id);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            console.log(profId)
+            const res = await axios.get(`http://localhost:8080/api/session/accepted/${profId}`)
+            let requests = []
+            console.log(res.data)
+            setSessionID(res.data[0].id)
+            res.data[0].requests.map((item) => {
+                let request = {}
+                request.title = item.appTitle
+                request.userId = item.student.id
+                request.desription = item.appDescription
+                request.submissionDate = new Date(item.requestDate).toLocaleDateString('ro-RO')
+                request.accepted = item.wasApproved
+                request.student = item.student.firstName + " " + item.student.lastName
+                request.id = item.id
+                request.fileUploaded = item.hasUploaded;
+                request.isApprovedUpload = item.isApprovedUpload
+                request.denialJustification = item.denialJustification
+                requests.push(request)
+            })
+            console.log(requests)
+            setData(requests)
+        };
+        fetchData();
+    }, []);
+
 
 
     const [selectedItem, setSelectedItem] = useState(null);
     const [open, setOpen] = useState(false);
+    const [fileList, setFileList] = useState([]);
+
     const showModal = (item) => {
         setOpen(true);
         setSelectedItem(item);
@@ -115,15 +152,37 @@ export default function Session() {
     };
 
 
-    const handleApprove = (item) => { 
+    const handleApprove = (item) => {
+        if (fileList.length === 0) {
+            message.error('Please upload a file first');
+            return;
+        }
         updateStatus(item.title, true);
+        axios.patch(`http://localhost:8080/api/request/upload/${item.id}`, { isApprovedUpload: true })
+        const formData = new FormData();
+        formData.append('', fileList[0]);
+        formData.append('studentId', userId);
+
+        axios.post(`http://localhost:8080/api/student/uploadRequest/${userId}/${sessionId}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(() => {
+                message.success('File uploaded successfully');
+                setStep(1);
+            })
+            .catch((error) => {
+                message.error('File upload failed');
+                console.error(error);
+            });
         setOpen(false);
 
     };
 
     const handleRefuse = (item) => {
         updateStatus(item.title, false);
-        console.log(item)
+        axios.patch(`http://localhost:8080/api/request/upload/${item.id}`, { isApprovedUpload: false })
         setOpen(false);
 
     };
@@ -134,11 +193,11 @@ export default function Session() {
         return [
             <CheckOutlined
                 key="approve"
-                onClick={() => updateStatus(item.title, true)}
+                onClick={() => handleApprove(item)}
             />,
             <CloseOutlined
                 key="decline"
-                onClick={() => updateStatus(item.title, false)}
+                onClick={() => handleRefuse(item)}
             />,
         ];
     };
@@ -156,7 +215,7 @@ export default function Session() {
                             <>
                                 <Typography.Title level={2}>Awaiting file upload</Typography.Title>
                                 <div className={s.cardsContainer}>
-                                    {data.map((item, index) => {
+                                    {data?.map((item, index) => {
                                         return (item.fileUploaded == false || item?.isApprovedUpload === false) ? (
                                             <ConfigProvider
                                                 theme={{
@@ -190,8 +249,8 @@ export default function Session() {
                             <>
                                 <Typography.Title level={2}>Awaiting uploaded file approval</Typography.Title>
                                 <div className={s.cardsContainer}>
-                                    {data.map((item, index) => {
-                                        return item.fileUploaded == true && item?.isApprovedUpload == 'pending' ? (
+                                    {data?.map((item, index) => {
+                                        return item.fileUploaded == true && item?.isApprovedUpload == null ? (
                                             <ConfigProvider
                                                 theme={{
                                                     components: {
@@ -224,7 +283,7 @@ export default function Session() {
                             <>
                                 <Typography.Title level={2}>Finished</Typography.Title>
                                 <div className={s.cardsContainer}>
-                                    {data.map((item, index) => {
+                                    {data?.map((item, index) => {
                                         return (item.fileUploaded == true && item?.isApprovedUpload == true) ? (
                                             <ConfigProvider
                                                 theme={{
@@ -261,10 +320,10 @@ export default function Session() {
                 footer={
                     selectedItem?.fileUploaded == true && selectedItem?.isApprovedUpload != true
                         ? [
-                            <Button key="back" danger onClick={()=>handleRefuse(selectedItem)}>
+                            <Button key="back" danger onClick={() => handleRefuse(selectedItem)}>
                                 Refuse
                             </Button>,
-                            <Button key="submit" type="primary" onClick={()=>handleApprove(selectedItem)}>
+                            <Button key="submit" type="primary" onClick={() => handleApprove(selectedItem)}>
                                 Approve
                             </Button>,
                             (
@@ -278,7 +337,7 @@ export default function Session() {
                 <p>{`${selectedItem?.submissionDate}`}</p>
                 <p>{`${selectedItem?.desription}`}</p>
                 {(selectedItem?.fileUploaded == true && selectedItem?.isApprovedUpload != true) ? (
-                    <a href={"API"} download>
+                    <a href={`http://localhost:8080/api/request/get/${selectedItem.userId}/${sessionID}`} download>
                         <DownloadOutlined />
                     </a>
                 ) : null}

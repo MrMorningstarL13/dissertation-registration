@@ -23,72 +23,20 @@ import {
 } from "@ant-design/icons";
 import s from "./Applications.module.css";
 
-const dataFromApi = [
-    {
-        title: "Ai based project",
-        student: "John Doe",
-        submissionDate: "12/12/2021",
-        accepted: true,
-        desription:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab deleniti assumenda praesentium natus cum reiciendis eligendi aspernatur, est quod dolorem quam iusto aut omnis animi temporibus! Dolore asperiores debitis optio!",
-    },
-    {
-        title: "Ai based project2",
-        student: "John Doe",
-        submissionDate: "12/12/2021",
-        accepted: true,
-
-        desription:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab deleniti assumenda praesentium natus cum reiciendis eligendi aspernatur, est quod dolorem quam iusto aut omnis animi temporibus! Dolore asperiores debitis optio!",
-    },
-    {
-        title: "Ai based project3",
-        student: "John Doe",
-        submissionDate: "12/12/2021",
-        accepted: false,
-        desription:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab deleniti assumenda praesentium natus cum reiciendis eligendi aspernatur, est quod dolorem quam iusto aut omnis animi temporibus! Dolore asperiores debitis optio!",
-    },
-    {
-        title: "Ai based project4",
-        student: "John Doe",
-        submissionDate: "12/12/2021",
-        accepted: false,
-        desription:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab deleniti assumenda praesentium natus cum reiciendis eligendi aspernatur, est quod dolorem quam iusto aut omnis animi temporibus! Dolore asperiores debitis optio!",
-    },
-    {
-        title: "Ai based project5",
-        accepted: "pending",
-        desription:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab deleniti assumenda praesentium natus cum reiciendis eligendi aspernatur, est quod dolorem quam iusto aut omnis animi temporibus! Dolore asperiores debitis optio!",
-    },
-    {
-        title: "Ai based projec6t",
-        accepted: "pending",
-        desription:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab deleniti assumenda praesentium natus cum reiciendis eligendi aspernatur, est quod dolorem quam iusto aut omnis animi temporibus! Dolore asperiores debitis optio!",
-    },
-    {
-        title: "Ai based project7",
-        accepted: "pending",
-        desription:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab deleniti assumenda praesentium natus cum reiciendis eligendi aspernatur, est quod dolorem quam iusto aut omnis animi temporibus! Dolore asperiores debitis optio!",
-    },
-];
-
 export default function Applications() {
 
     const [open, setOpen] = useState(false);
-    const [data, setData] = useState(dataFromApi);
+    const [data, setData] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [feedback, setFeedback] = useState(null);
     const profId = useUserStore((state) => state.id);
     console.log(profId)
     useEffect(() => {
         const fetchData = async () => {
+            console.log(profId)
             const res = await axios.get(`http://localhost:8080/api/session/${profId}`)
             let requests = []
+            console.log(res.data)
             res.data[0].requests.map((item) => {
                 let request = {}
                 request.title = item.appTitle
@@ -97,6 +45,7 @@ export default function Applications() {
                 request.accepted = item.wasApproved
                 request.student = item.student.firstName + " " + item.student.lastName
                 request.id = item.id
+                request.denialJustification = item.denialJustification
                 requests.push(request)  
             })
             console.log(requests)
@@ -126,9 +75,13 @@ export default function Applications() {
         //api
     };
     const handleRefuse = (item) => {
+        item.denialJustification = feedback
         updateStatus(item.title, false)
-        axios.patch(`http://localhost:8080/api/request/upload/${item.id}`,{wasApproved:false})
-
+        axios.patch(`http://localhost:8080/api/request/upload/${item.id}`,{
+        wasApproved:false,
+        denialJustification: feedback
+    })
+        setFeedback("")
         setOpen(false);
 
         //api
@@ -137,7 +90,7 @@ export default function Applications() {
     const handleClose = () => {
         setOpen(false);
         setSelectedItem(null);
-        setFeedback(null);
+        setFeedback("");
     }
 
     const actions = (item) => {
@@ -170,7 +123,7 @@ export default function Applications() {
                                 {" "}
                                 <Typography.Title level={2}>Pending requests</Typography.Title>
                                 <div className={s.cardsContainer}>
-                                    {data.map((item, index) => {
+                                    {data?.map((item, index) => {
                                         return item.accepted == null ? (
                                             <ConfigProvider
                                                 theme={{
@@ -255,6 +208,7 @@ export default function Applications() {
                                                 >
                                                     <p>{item?.student}</p>
                                                     <p>{item.desription}</p>
+                                                   
                                                 </Card>
                                             </ConfigProvider>
                                         ) : null;
@@ -287,8 +241,14 @@ export default function Applications() {
                 <p>{`${selectedItem?.submissionDate}`}</p>
                 <p>{`${selectedItem?.desription}`}</p>
                 {selectedItem?.accepted == null ? (
-                    <TextArea onChange={(e) => setFeedback(e.target.innerText)} />
+                    <TextArea value={feedback} onChange={(e) => setFeedback(e.target.value)} />
                 ) : null}
+                {selectedItem?.accepted === false ? (
+                    <>
+                    <b>Denial justification:</b>
+                     <p>{selectedItem?.denialJustification}</p>
+                    </>
+                ):null}
             </Modal>
         </div>
     );
