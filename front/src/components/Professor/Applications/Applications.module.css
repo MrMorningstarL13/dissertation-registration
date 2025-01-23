@@ -1,0 +1,18 @@
+.cardsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem
+}
+
+.card {
+    width: 20rem;
+}
+
+.applicationsContainer h2{
+    text-align: center;
+}
+
+.collapse{
+    width: 60vw;
+}

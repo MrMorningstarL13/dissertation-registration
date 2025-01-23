@@ -1,12 +1,14 @@
-import React from 'react'
 import { Form, Input, Button, Select } from "antd";
 import s from "./StudentSignIn.module.css"
+import useUserStore from "../../../stores/userStore"
 
 
-export const StudentSignIn = () => {
-
+export const StudentSignIn = ({ onSubmit }) => {
+    const setUser = useUserStore((state) => state.setStudent)
     const onFinish = (values) => {
         console.log('Success:', values);
+        setUser(values)
+        onSubmit()
     };
 
     return (
@@ -19,7 +21,7 @@ export const StudentSignIn = () => {
                     }}
 
                     wrapperCol={{
-                        span:18
+                        span: 18
                     }}
                     labelWrap={true}
 
@@ -32,10 +34,37 @@ export const StudentSignIn = () => {
                     <Form.Item
                         label="Group"
                         name="group"
+                        
                         rules={[
                             {
                                 required: true,
                                 message: 'Please input your email!',
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="First Name"
+                        name="firstName"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your first name!',
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Last Name"
+                        name="lastName"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your last name!',
                             },
                         ]}
                     >
@@ -56,12 +85,31 @@ export const StudentSignIn = () => {
                     </Form.Item>
 
                     <Form.Item
+                        label="Specialization"
+                        name="specialization"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please a select a specialization"
+                            }
+                        ]}
+                    >
+                        <Select options={[
+                            { value: 'ei', label: <span>Economic Informatics</span> },
+                            { value: 'cyb', label: <span>Cybernetics</span> },
+                            { value: 'stat', label: <span>Statistics</span> }]}
+                            placeholder={<span>Economic Informatics</span>}
+                        />
+                    </Form.Item>
+
+
+                    <Form.Item
                         label="Year"
                         name="year"
                         rules={[
                             {
                                 required: true,
-                                message: "Please a select an year"
+                                message: "Please a select a year"
                             }
                         ]}
                     >
@@ -77,12 +125,12 @@ export const StudentSignIn = () => {
 
                     <Form.Item
                         label="Education Format"
-                        
-                        name="educationFormat"
+
+                        name="edFormat"
                         rules={[
                             {
                                 required: true,
-                                message: "Please a select an year"
+                                message: "Please a select your education format"
                             }
                         ]}
                     >
@@ -96,8 +144,8 @@ export const StudentSignIn = () => {
 
 
                     <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                            Next
+                        <Button type="primary" htmlType="submit" on>
+                            Save
                         </Button>
                     </Form.Item>
                 </Form>

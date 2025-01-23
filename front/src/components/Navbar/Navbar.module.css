@@ -1,0 +1,14 @@
+.navContainer {
+    height: 6rem;
+    font-size: 40px;
+    font-weight: 600;
+}
+
+
+@media screen and (max-width: 650px) {
+    .navContainer {
+        width: 40vw;
+        z-index: 2;
+    }
+
+}

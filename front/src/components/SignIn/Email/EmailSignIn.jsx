@@ -2,10 +2,31 @@ import React from 'react'
 import s from "./EmailSignIn.module.css"
 import { Form, Input } from "antd";
 import { Button } from "antd";
+import useUserStore from "../../../stores/userStore"
 
-export const EmailSignIn = ({onSubmit}) => {
+export const EmailSignIn = ({ setFormStep, setIsProfessor }) => {
+    const setEmail = useUserStore((state) => state.setEmail)
+    const setProfessor = useUserStore((state) => state.setProfessor)
 
-    const onFinish = onSubmit;
+    const onFinish = (values) => {
+        console.log(values)
+        setEmail(values.email)
+        if (values.email.includes("@stud")) {
+            setIsProfessor(0)
+            setFormStep(1)
+        } else {
+            setIsProfessor(1)
+            setProfessor({
+                email: "prof@ase.ro",
+                firstName: "Prof",
+                lastName: "Prof",
+                phone: "123456789",
+                specialization: "ASE",
+            })
+            setFormStep(2)
+        }
+        
+    }
 
     return (
         <div>
