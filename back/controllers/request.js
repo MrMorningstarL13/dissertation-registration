@@ -1,6 +1,7 @@
 const { RequestModel, SessionModel, StudentModel } = require("../models");
 const path = require("path");
 const fs = require("fs");
+const Sequelize = require('sequelize')
 
 const controller = {
   createRequest: async (req, res) => {
@@ -31,8 +32,7 @@ const controller = {
 
   upload: async (req, res) => {
     try {
-      const { requestId } = req.params; // Use requestId for precise targeting
-      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",requestId ,"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",);
+      const { requestId } = req.params;
       const updateData = {
         ...req.body, 
       };
@@ -114,38 +114,42 @@ const controller = {
           {
             wasApproved: true,
           },
-          { where: { id: req.params.id } }
+          { where: { id: evaluatedRequest.id } }
         );
 
-        let sessionUpdated = await SessionModel.update(
+        let sessionUpdated1 = await SessionModel.findByPk(evaluatedRequest.sessionId);
+
+        let sessionUpdateResult = await SessionModel.update(
           {
-            availableSlots: (availableSlots -= 1),
+            availableSlots: (sessionUpdated1.availableSlots -= 1),
           },
-          { where: { id: updatedRequest.sessionId } }
+          { where: { id: evaluatedRequest.sessionId } }
         );
-
+        
         let requests = await RequestModel.update(
           {
             wasApproved: false,
           },
           {
-            where: { studentId: evaluatedRequest.studentId },
+            where: { 
+              studentId: evaluatedRequest.studentId,
+              id: {
+                [Sequelize.Op.ne]: evaluatedRequest.id
+              } 
+            },
           }
         );
-
-        for (let request of requests) {
-        }
 
         res.status(200).json("Request accepted!");
       } else {
         res.status(404).json("No request found");
       }
     } catch (error) {
-      console.warn("error: accept request");
+      console.warn(error.message);
       res.status(500).json("error: accept request");
     }
   },
-  //params: id, body: denialJustification
+
   denyRequest: async (req, res) => {
     try {
       let evaluatedRequest = await RequestModel.findByPk(req.params.id);

@@ -103,6 +103,25 @@ const controller = {
     }
   },
 
+  getSlotsPerProfessor: async(req, res) => {
+    let id = req.params.id
+    let professor = await ProfessorModel.findByPk(id, {
+        include: [{
+            model: SessionModel,
+            attributes: ['availableSlots','maximumSlots']
+        }]
+    })
+
+    let slots = {occupied: 0, total: 0}
+
+    for(let session of professor.sessions){
+        let occupiedSlots = session.maximumSlots - session.availableSlots
+        slots.occupied += occupiedSlots
+        slots.total += session.maximumSlots
+    }
+
+    res.status(200).json(slots)
+  }
  
 };
 
