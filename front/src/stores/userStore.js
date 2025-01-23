@@ -1,9 +1,12 @@
 import { create } from "zustand";
 
 const useUserStore = create((set) => ({
+  id: 0,
   email: "",
   firstName: "",
   lastName: "",
+  faculty: "",
+  series: "",
   group: 0,
   phone: "",
   specialization: "",
@@ -26,21 +29,24 @@ const useUserStore = create((set) => ({
       lastName: stud.lastName,
       group: stud.group,
       phone: stud.phone,
+      faculty: stud.faculty,
+      series: stud.series,
+      email: stud.email,
+      id: stud.id,
       specialization: stud.specialization,
       year: stud.year,
       edFormat: stud.edFormat,
-      isProfessor: 0
+      isProfessor: 0,
     }),
 
-    setProfessor: (stud) =>
-      set({
-        firstName: stud.firstName,
-        lastName: stud.lastName,
-        phone: stud.phone,
-        specialization: stud.specialization,
-        isProfessor: 1
-      }),
-
+  setProfessor: (stud) =>
+    set({
+      firstName: stud.firstName,
+      lastName: stud.lastName,
+      phone: stud.phone,
+      specialization: stud.specialization,
+      isProfessor: 1,
+    }),
 
   //   increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
   //   removeAllBears: () => set({ bears: 0 }),

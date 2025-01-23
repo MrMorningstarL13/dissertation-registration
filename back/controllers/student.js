@@ -8,9 +8,9 @@ const controller = {
                 lastName: req.body.lastName,
                 faculty: req.body.faculty,
                 specialization: req.body.specialization,
-                yearOfEnrollment: req.body.yearOfEnrollment,
-                phoneNumber: req.body.phoneNumber,
-                formOfEducation: req.body.formOfEducation,
+                yearOfEnrollment: req.body.year,
+                phoneNumber: req.body.phone,
+                formOfEducation: req.body.edFormat,
                 series: req.body.series,
                 group: req.body.group,
                 email: req.body.email,
@@ -18,8 +18,8 @@ const controller = {
             }
 
             let studentCreat = await StudentModel.create(studentData)
-            req.session.id = studentCreat.id;
-            req.session.email = studentCreat.email;
+            console.log(studentCreat.dataValues.password)
+          
             res.status(200).json(studentCreat)
 
         } catch (error) {
@@ -51,7 +51,7 @@ const controller = {
                 }
             } else {
                 if (studentCautat.password === data.password) {
-                    res.status(200).json("log in successful")
+                    res.status(200).json(studentCautat)
                 } else {
                     res.status(403).json("incorrect password")
                 }

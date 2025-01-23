@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Table, Button } from "antd";
 import useApplicationStore from '../../../stores/applicationStore';
+import axios from 'axios';
 
 
 const dataSource = [
@@ -49,14 +50,19 @@ const columns = [
     key: 'name',
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
+    title: 'Faculty',
+    dataIndex: 'faculty',
+    key: 'faculty',
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
+    title: 'Slots',
+    dataIndex: 'slots',
+    key: 'slots',
+  },
+  {
+    title: 'Period',
+    dataIndex: 'startStop',
+    key: 'startStop',
   },
 
 ];
@@ -64,17 +70,37 @@ const columns = [
 
 
 export default function SessionSelection() {
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axios.get(`http://localhost:8080/api/session/`)
+      let sessions = []
+      console.log(res.data)
+      res.data.map((ses) => {
+        let session = {}
+        session.key = ses.id
+        session.faculty = ses.professor.faculty
+        session.name = ses.professor.firstName + " " + ses.professor.lastName;
+        session.slots = ses.availableSlots +"/"+ ses.maximumSlots;
+        session.startStop = new Date(ses.startDate).toLocaleDateString('ro-RO')+" - "+ new Date(ses.endDate).toLocaleDateString('ro-RO');
+
+        sessions.push(session)
+      })
+      setSessions(sessions)
+    }
+    fetchData()
+  }, []);
   const inscreaseStep = useApplicationStore((state) => state.increaseStep);
   const decreaseStep = useApplicationStore((state) => state.decreaseStep);
-
-  const [profs, setProfs] = useState([]);
-
+  const setSession = useApplicationStore((state) => state.setSession);
+  const [sessions, setSessions] = useState([]);
+  const [selectedSession, setSelectedSession] = useState(null);
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      setProfs(selectedRowKeys)
-      console.log(profs)
+      setSession(selectedRowKeys[0])
+      setSelectedSession(selectedRowKeys[0])
     },
     getCheckboxProps: (record) => ({
       disabled: record.name === 'Disabled User',
@@ -86,7 +112,6 @@ export default function SessionSelection() {
     inscreaseStep()
   }
 
-  console.log(profs.length)
 
 
   return (
@@ -99,10 +124,10 @@ export default function SessionSelection() {
           ...rowSelection,
         }}
         columns={columns}
-        dataSource={dataSource}
+        dataSource={sessions}
       />
       <Button type="primary" onClick={() => decreaseStep()}>Back</Button>
-      <Button disabled={profs.length !== 0 ? false : true} type="primary" onClick={onProfConfirmation}>Next</Button>
+      <Button disabled={selectedSession!=null ? false : true} type="primary" onClick={onProfConfirmation}>Next</Button>
     </div>
   )
 }

@@ -1,10 +1,18 @@
 const express = require('express')
 const db = require('./models/index').connection;
 const router = require('./routes')
-
+const session = require("client-sessions");
 const app = express()
-const port = 8080
+const cors = require("cors");
 
+const port = 8080
+app.use(
+    cors({
+        origin: ["http://localhost:5173"],
+      credentials: true,
+      allowedHeaders: ["Content-Type", "Authorization", "Access-Control-Allow-Methods", "Access-Control-Request-Headers", "Access-Control-Allow-Origin"],
+    })
+  );
 app.use(express.json())
 
 app.listen(port, () => {

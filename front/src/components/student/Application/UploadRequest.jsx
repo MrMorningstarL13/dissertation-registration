@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import useApplicationStore from '../../../stores/applicationStore';
+import useUserStore from '../../../stores/userStore';
+
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload, Button, Form, Input, Typography } from 'antd';
+import axios from 'axios';
 const { TextArea } = Input;
 
 export default function UploadRequest() {
     const [isUpload, setIsUpload] = useState(false);
     const setStep = useApplicationStore((state) => state.setStep);
+    const userId = useUserStore((state) => state.id);
+    const sessionId = useApplicationStore((state) => state.sessionId);
+
     const { Dragger } = Upload;
     const props = {
         name: 'file',
@@ -52,6 +58,7 @@ export default function UploadRequest() {
             <Form
                 onFinish={(values) => {
                     console.log('Form values:', values);
+                    axios.post(`http://localhost:8080/api/request/create/${userId}/${sessionId}`, values)
                     message.success('Form submitted successfully!');
                     setStep(1)
                 }}
@@ -99,6 +106,10 @@ export default function UploadRequest() {
                     </Form.Item>
                 </Form.Item>
 
+               
+                <Button  htmlType="submit" onClick={() => setStep(1)}>
+                    Back
+                </Button>
                 <Button type="primary" htmlType="submit">
                     Send
                 </Button>

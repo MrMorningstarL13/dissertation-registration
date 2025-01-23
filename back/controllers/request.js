@@ -1,96 +1,134 @@
-const {RequestModel, SessionModel} = require("../models")
+const { RequestModel, SessionModel } = require("../models");
 
 const controller = {
-    createRequest: async(req, res) => {
-        try {
-            let data = {
-                appTitle: req.body.appTitle,
-                appDescription: req.body.appDescription,
-                studentId: req.params.studId,
-                sessionId: req.params.sessionId
-            }
-    
-            let createdRequest = await RequestModel.create({
-                appTitle:data.appTitle,
-                appDescription: data.appDescription,
-                requestDate: new Date(),
-                studentId: data.studentId,
-                sessionId: data.sessionId,
-            })
-            res.status(200).json(createdRequest)
-        } catch (error) {
-            console.warn(error)
-            res.status(500).json("error creating request")
-        }
-        
-    },
+  createRequest: async (req, res) => {
+    try {
+      console.log(req.body, req.params);
+      let data = {
+        appTitle: req.body.title,
+        appDescription: req.body.description,
+        studentId: req.params.studId,
+        sessionId: req.params.sessionId,
+      };
 
-    upload: async(req, res) => {
-        try {
-            let updatedRequest = await RequestModel.update({
-                hasUploaded: true
-            }, {where: {
-                studentId:req.params.id
-            }})
-            res.status(200).json("upload good")
-        } catch (error) {
-            console.warn(err)
-            res.status(500).json("Server error!")
-        }
-    },
+      console.log(data);
 
-    acceptRequest: async(req, res) => {
-        try {
-            let evaluatedRequest = await RequestModel.findByPk(req.params.id)
-            if(evaluatedRequest){
-                let updatedRequest = await RequestModel.update({
-                    wasApproved: true,
-                }, {where: {id:req.params.id}})
-            
-            let sessionUpdated = await SessionModel.update({
-                availableSlots: availableSlots -= 1
-            }, {where: {id: updatedRequest.sessionId}})
-
-            let requests = await RequestModel.update({
-                wasApproved: false,
-            },  
-            {
-                where: {studentId: evaluatedRequest.studentId}
-            })
-
-            for(let request of requests){
-
-            }
-            
-            res.status(200).json("Request accepted!")
-            } else {
-                res.status(404).json("No request found")
-            }
-        } catch (error) {
-            console.warn("error: accept request")
-            res.status(500).json("error: accept request")
-        }
-    },
-    //params: id, body: denialJustification
-    denyRequest: async(req, res) => {
-        try {
-            let evaluatedRequest = await RequestModel.findByPk(req.params.id)
-            if(evaluatedRequest){
-                let updatedRequest = await RequestModel.update({
-                    wasApproved: false,
-                    appTitle: appTitle,
-                    appDescription: appDescription,
-                    denialJustification: req.body.denialJustification
-                }, {where: {id:req.params.id}})
-                res.status(200).json("Request denied!")
-            } else {
-                res.status(404).json("No request found")
-            }
-        } catch (error) {
-            console.warn("error: deny request")
-            res.status(500).json("error: deny request")
-        }
+      let createdRequest = await RequestModel.create({
+        appTitle: data.appTitle,
+        appDescription: data.appDescription,
+        requestDate: new Date(),
+        studentId: data.studentId,
+        sessionId: data.sessionId,
+      });
+      res.status(200).json(createdRequest);
+    } catch (error) {
+      console.warn(error);
+      res.status(500).json("error creating request");
     }
-}
+  },
 
-module.exports = controller
+  upload: async (req, res) => {
+    try {
+      const { requestId } = req.params; // Use requestId for precise targeting
+      const updateData = {
+        ...req.body,  // Spread the values from req.body to update in the database
+        hasUploaded: true, // Ensure `hasUploaded` is always set to true
+      };
+  
+      const [updatedRows] = await RequestModel.update(updateData, {
+        where: {
+          id: requestId,
+        },
+      });
+  
+      if (updatedRows === 0) {
+        return res.status(404).json("No matching request found or no updates made.");
+      }
+  
+      res.status(200).json("Request updated successfully!");
+    } catch (error) {
+      console.warn(error);
+      res.status(500).json("Server error!");
+    }
+  },
+  
+  
+
+  getRequests: async (req, res) => {
+    try {
+      console.log("ceva");
+      let requests = await RequestModel.findAll({
+        where: { studentId: req.params.id },
+      });
+      res.status(200).json(requests);
+    } catch (error) {
+      console.warn(error);
+      res.status(500).json("error: get requests");
+    }
+  },
+
+  acceptRequest: async (req, res) => {
+    try {
+      let evaluatedRequest = await RequestModel.findByPk(req.params.id);
+      if (evaluatedRequest) {
+        let updatedRequest = await RequestModel.update(
+          {
+            wasApproved: true,
+          },
+          { where: { id: req.params.id } }
+        );
+
+        let sessionUpdated = await SessionModel.update(
+          {
+            availableSlots: (availableSlots -= 1),
+          },
+          { where: { id: updatedRequest.sessionId } }
+        );
+
+        let requests = await RequestModel.update(
+          {
+            wasApproved: false,
+          },
+          {
+            where: { studentId: evaluatedRequest.studentId },
+          }
+        );
+
+        for (let request of requests) {
+        }
+
+        res.status(200).json("Request accepted!");
+      } else {
+        res.status(404).json("No request found");
+      }
+    } catch (error) {
+      console.warn("error: accept request");
+      res.status(500).json("error: accept request");
+    }
+  },
+  //params: id, body: denialJustification
+  denyRequest: async (req, res) => {
+    try {
+      let evaluatedRequest = await RequestModel.findByPk(req.params.id);
+      if (evaluatedRequest) {
+        let updatedRequest = await RequestModel.update(
+          {
+            wasApproved: false,
+            appTitle: appTitle,
+            appDescription: appDescription,
+            denialJustification: req.body.denialJustification,
+          },
+          { where: { id: req.params.id } }
+        );
+        res.status(200).json("Request denied!");
+      } else {
+        res.status(404).json("No request found");
+      }
+    } catch (error) {
+      console.warn("error: deny request");
+      res.status(500).json("error: deny request");
+    }
+  },
+};
+
+module.exports = controller;
