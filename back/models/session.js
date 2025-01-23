@@ -1,18 +1,11 @@
 const {DataTypes} = require('sequelize')
 
 module.exports = (db) => {
-    const Session = db.define('session', {
+    const SessionModel = db.define('session', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-        },
-        profId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        requestId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
+            autoIncrement: true,
         },
         startDate: {
             type: DataTypes.DATE,
@@ -22,7 +15,17 @@ module.exports = (db) => {
             type: DataTypes.DATE,
             allowNull: false,
         },
+        availableSlots: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        maximumSlots: {
+            type: DataTypes.INTEGER,
+            defaultValue: 20,
+        }
     },{
         freezeTableName: true,
     })
+
+    return SessionModel
 }

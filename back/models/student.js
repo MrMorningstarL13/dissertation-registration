@@ -1,10 +1,11 @@
 const {DataTypes} = require('sequelize')
 
 module.exports = (db) => {
-    const Student = db.define("student", {
+    const StudentModel = db.define("student", {
         id: {
             type: DataTypes.INTEGER,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true,
         },
         firstName: {
             type: DataTypes.STRING,
@@ -14,11 +15,15 @@ module.exports = (db) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        dateOfBirth: {
-            type: DataTypes.DATE,
+        phoneNumber: {
+            type: DataTypes.STRING,
             allowNull: false,
         },
-        phoneNumber: {
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        password: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -28,28 +33,25 @@ module.exports = (db) => {
         },
         specialization: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         yearOfEnrollment: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         formOfEducation: {
             type: DataTypes.ENUM(["IF","IFR", "ID"])
         },
-        isInSuplementaryYear: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-        },
         series: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
         group: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
     },{
         freezeTableName: true
     })
+    return StudentModel
 }

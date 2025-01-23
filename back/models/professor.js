@@ -1,32 +1,39 @@
 const {DataTypes} = require('sequelize')
 
 module.exports = (db) => {
-    const Professor = db.define('professor', {
+    const ProfessorModel = db.define("professor", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
+            autoIncrement: true,
         },
         firstName: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         lastName: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        phoneNumber: {
+            type: DataTypes.STRING,
             allowNull: false,
         },
         faculty: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        department: {
+        email: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        freeSpots: {
-            type: DataTypes.INTEGER,
+        password: {
+            type: DataTypes.STRING,
             allowNull: false,
         },
     },{
-        freezeTableName: true,
+        freezeTableName: true
     })
+
+    return ProfessorModel
 }

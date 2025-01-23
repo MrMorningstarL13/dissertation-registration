@@ -1,28 +1,41 @@
 const {DataTypes} = require('sequelize')
 
 module.exports = (db) => {
-    const Request = db.define("request", {
+    const RequestModel = db.define("request", {
         id:{
             type: DataTypes.INTEGER,
             primaryKey: true,
-        },
-        studentId:{
-            type: DataTypes.INTEGER,
-            allowNull: false,
+            autoIncrement: true,
         },
         wasApproved:{
             type: DataTypes.BOOLEAN,
-            allowNull: false,
+            allowNull: true,
         },
         appTitle: {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        appDescription: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
         denialJustification: {
             type: DataTypes.TEXT,
-            allowNull: false,
+            allowNull: true,
         },
+        requestDate: {
+            type: DataTypes.DATE,
+            allowNull: false
+        },
+        hasUploaded: {
+            type: DataTypes.BOOLEAN
+        },
+        isApprovedUpload: {
+            type: DataTypes.BOOLEAN
+        }
     },{
         freezeTableName: true
     })
+
+    return RequestModel
 }
